@@ -1,0 +1,95 @@
+# =======================================================================
+# ECOSISTEMA .NET / VISUAL STUDIO / MAUI
+# =======================================================================
+## Sincronización y estado del IDE
+*.sln.docstates
+*.suo
+*.user
+*.userosscache
+*.sln.gpstate
+.vs/
+.utmp/
+
+## Resultados de Compilación y Carpetas de Salida
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]uild/
+[Ll]og/
+[Ll]ogs/
+Generated%20Files/
+
+## Paquetes de NuGet y artefactos locales
+*.nupkg
+*.nuget.props
+*.nuget.targets
+.nuget/
+
+## Específicos de .NET MAUI / Xamarin (Publicación y firmas)
+AppPackages/
+BundleArtifacts/
+*.apk
+*.aab
+*.ipa
+*.appx
+*.msi
+*.msix
+
+## Secretos de usuario (Evitar fugas de credenciales locales)
+secrets.json
+.microsoft.dotnet.secretmanager.list.json
+
+# =======================================================================
+# ECOSISTEMA JAVA (Web Applications / Spring Boot / Servlets)
+# =======================================================================
+## Archivos compilados y empaquetados
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.car
+
+## Carpetas de automatización de construcción (Maven / Gradle)
+target/
+.gradle/
+/build/
+/dist/
+
+## Configuración local de IDEs de Java (NetBeans, Eclipse, IntelliJ)
+nbproject/private/
+build/
+nbbuild/
+dist/
+nbdist/
+.mtform.properties
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# =======================================================================
+# ENTORNO WEB / HERRAMIENTAS FRONTEND (Node.js)
+# =======================================================================
+node_modules/
+/wwwroot/css/site.css.map
+.env
+.env.local
+
+# =======================================================================
+# ARCHIVOS TEMPORALES Y DEL SISTEMA OPERATIVO
+# =======================================================================
+*.swp
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
