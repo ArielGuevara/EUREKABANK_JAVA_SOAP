@@ -272,10 +272,10 @@
     private string? ResultMessage { get; set; }
     private string ResultCssClass { get; set; } = "alert-info";
 
-    // Modelos para binding en la vista
-    private DepositRequestModel DepositModel { get; set; } = new();
-    private WithdrawRequestModel WithdrawModel { get; set; } = new();
-    private TransferRequestModel TransferModel { get; set; } = new();
+    // Modelos para cada formulario
+    private Core.Models.Requests.DepositRequest DepositModel { get; set; } = new();
+    private Core.Models.Requests.DepositRequest WithdrawModel { get; set; } = new();
+    private Core.Models.Requests.TransferRequest TransferModel { get; set; } = new();
 
     private void SetActiveTab(string tab)
     {
@@ -295,78 +295,95 @@
 
     private async Task HandleDeposit()
     {
-        // Lógica de ejemplo, reemplázala por la llamada a tu API real
+        await ExecuteTransaction(async () =>
+        {
+            // Asignamos datos fijos que no vienen del formulario
+            DepositModel.CodigoEmpleado = SessionManager.CurrentUser?.Codigo ?? "N/A";
+            DepositModel.CodigoTipoMovimiento = "001"; // Valor fijo para depósito
+            DepositModel.ClaveCuenta = "123456"; // Valor por defecto o no requerido para depósito
+
+            var response = await TransactionService.RealizarDepositoAsync(DepositModel);
+
+            if (response.Exitoso)
+            {
+                ResultMessage = $"Depósito exitoso";
+                ResultCssClass = "alert-success";
+                DepositModel = new(); // Resetea el formulario
+            }
+            else
+            {
+                ResultMessage = $"Error: {response.Mensaje}";
+                ResultCssClass = "alert-danger";
+            }
+        });
+    }
+
+    private async Task ExecuteTransaction(Func<Task> transactionLogic)
+    {
         IsBusy = true;
-        ClearResult();
-        StateHasChanged();
+        ResultMessage = null;
+        StateHasChanged(); // Forzar actualización de UI
 
         try
         {
-            await Task.Delay(1500); // Simulando red
-            ResultMessage = $"Depósito de ${DepositModel.Importe} a la cuenta {DepositModel.CodigoCuenta} realizado con éxito.";
-            ResultCssClass = "alert-success";
-            DepositModel = new(); // Limpiar formulario
+            await transactionLogic();
         }
         catch (Exception ex)
         {
-            ResultMessage = "No se pudo realizar el depósito. Inténtalo más tarde.";
+            ResultMessage = $"Error inesperado al procesar la transacción: {ex.Message}";
             ResultCssClass = "alert-danger";
         }
         finally
         {
             IsBusy = false;
-            StateHasChanged();
+            StateHasChanged(); // Forzar actualización de UI
         }
     }
 
     private async Task HandleWithdraw()
     {
-        IsBusy = true;
-        ClearResult();
-        StateHasChanged();
+        await ExecuteTransaction(async () =>
+        {
+            WithdrawModel.CodigoEmpleado = SessionManager.CurrentUser?.Codigo ?? "N/A";
+            WithdrawModel.CodigoTipoMovimiento = "002"; // Valor fijo para retiro
 
-        try
-        {
-            await Task.Delay(1500);
-            ResultMessage = $"Retiro procesado exitosamente por ${WithdrawModel.Importe}.";
-            ResultCssClass = "alert-success";
-            WithdrawModel = new();
-        }
-        catch (Exception ex)
-        {
-            ResultMessage = "Fondos insuficientes o error de conexión.";
-            ResultCssClass = "alert-danger";
-        }
-        finally
-        {
-            IsBusy = false;
-            StateHasChanged();
-        }
+            var response = await TransactionService.RealizarRetiroAsync(WithdrawModel);
+
+            if (response.Exitoso)
+            {
+                ResultMessage = $"Retiro exitoso";
+                ResultCssClass = "alert-success";
+                WithdrawModel = new();
+            }
+            else
+            {
+                ResultMessage = $"Error: {response.Mensaje}";
+                ResultCssClass = "alert-danger";
+            }
+        });
     }
 
+    // Lógica para la Transferencia
     private async Task HandleTransfer()
     {
-        IsBusy = true;
-        ClearResult();
-        StateHasChanged();
+        await ExecuteTransaction(async () =>
+        {
+            TransferModel.CodigoEmpleado = SessionManager.CurrentUser?.Codigo ?? "N/A";
 
-        try
-        {
-            await Task.Delay(1500);
-            ResultMessage = $"Transferencia a la cuenta {TransferModel.CuentaDestino} completada con éxito.";
-            ResultCssClass = "alert-success";
-            TransferModel = new();
-        }
-        catch (Exception ex)
-        {
-            ResultMessage = "Error en la transferencia. Verifica los códigos y clave.";
-            ResultCssClass = "alert-danger";
-        }
-        finally
-        {
-            IsBusy = false;
-            StateHasChanged();
-        }
+            var response = await TransactionService.RealizarTransferenciaAsync(TransferModel);
+
+            if (response.Exitoso)
+            {
+                ResultMessage = $"Transferencia exitosa.";
+                ResultCssClass = "alert-success";
+                TransferModel = new();
+            }
+            else
+            {
+                ResultMessage = $"Error: {response.Mensaje}";
+                ResultCssClass = "alert-danger";
+            }
+        });
     }
 
     // Clases internas para los modelos del formulario

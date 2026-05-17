@@ -116,7 +116,13 @@ namespace EurekaBank.Core.Services.Implementations
         private async Task<LoginResponse> CallJavaLoginManualAsync(LoginRequest request)
         {
             var endpointUrl = _configuration["Hosts:Soap:Java:Authentication"];
-            
+            var baseIp = _configuration["ServerConfig:BaseIp"];
+
+            if (!string.IsNullOrWhiteSpace(endpointUrl) && !string.IsNullOrWhiteSpace(baseIp))
+            {
+                endpointUrl = endpointUrl.Replace("{IP}", baseIp);
+            }
+
             try
             {
                 System.Diagnostics.Debug.WriteLine($"=== MANUAL SOAP JAVA REQUEST ===");
@@ -273,7 +279,13 @@ namespace EurekaBank.Core.Services.Implementations
         private async Task<LoginResponse> CallJavaLoginAsync(LoginRequest request)
         {
             var endpointUrl = _configuration["Hosts:Soap:Java:Authentication"];
-            
+            var baseIp = _configuration["ServerConfig:BaseIp"];
+
+            if (!string.IsNullOrWhiteSpace(endpointUrl) && !string.IsNullOrWhiteSpace(baseIp))
+            {
+                endpointUrl = endpointUrl.Replace("{IP}", baseIp);
+            }
+
             // Crear el cliente estándar
             var client = new JavaSoapAuth.ServicioAutenticacionClient(Binding, new EndpointAddress(endpointUrl));
 

@@ -285,14 +285,27 @@
 
         try
         {
+            System.Diagnostics.Debug.WriteLine($"=== REPORTS PAGE ===");
+            System.Diagnostics.Debug.WriteLine($"Starting search for account: {CodigoCuenta}");
+
             Movimientos = await ReportService.ObtenerMovimientosAsync(CodigoCuenta);
+            
             var count = Movimientos?.Count() ?? 0;
             DebugInfo = $"Service returned {count} movements";
+            
+            System.Diagnostics.Debug.WriteLine($"ReportsPage: Received {count} movements");
+            
+            if (count == 0)
+            {
+                DebugInfo += " - Check debug console for more details";
+            }
         }
         catch (Exception ex)
         {
             ErrorMessage = "Error al obtener los movimientos: " + ex.Message;
             DebugInfo = $"Exception: {ex.GetType().Name} - {ex.Message}";
+            System.Diagnostics.Debug.WriteLine($"ReportsPage Exception: {ex.Message}");
+            System.Diagnostics.Debug.WriteLine($"Stack trace: {ex.StackTrace}");
         }
         finally
         {
