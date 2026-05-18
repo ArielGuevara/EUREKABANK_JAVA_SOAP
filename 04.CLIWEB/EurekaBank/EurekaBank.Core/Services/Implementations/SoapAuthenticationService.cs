@@ -63,10 +63,20 @@ namespace EurekaBank.Core.Services.Implementations
         private async Task<LoginResponse> CallDotNetLoginAsync(LoginRequest request)
         {
             var endpointUrl = _configuration["Hosts:Soap:DotNet:Authentication"];
+            var baseIp = _configuration["ServerConfig:BaseIp"];
+
+            if (!string.IsNullOrWhiteSpace(endpointUrl) && !string.IsNullOrWhiteSpace(baseIp))
+            {
+                endpointUrl = endpointUrl.Replace("{IP}", baseIp);
+            }
             var client = new DotNetSoapAuth.ServicioAutenticacionClient(Binding, new EndpointAddress(endpointUrl));
 
             // 'soapResponse' será ahora del tipo 'RespuestaDTO'
             var soapResponse = await client.LoginAsync(request.Usuario, request.Clave);
+
+            System.Diagnostics.Debug.WriteLine($"SOAP Exitoso: {soapResponse.Exitoso}");
+            System.Diagnostics.Debug.WriteLine($"SOAP Mensaje: {soapResponse.Mensaje}");
+            System.Diagnostics.Debug.WriteLine($"SOAP Datos null: {soapResponse.Datos == null}");
 
             // Le pasamos el objeto 'RespuestaDTO' al mapeador
             return MapDotNetResponse(soapResponse);

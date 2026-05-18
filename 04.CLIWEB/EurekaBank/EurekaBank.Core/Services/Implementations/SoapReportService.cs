@@ -442,6 +442,12 @@ namespace EurekaBank.Core.Services.Implementations
         private DotNetSoapReport.ServicioReporteClient GetDotNetClient()
         {
             var url = _configuration["Hosts:Soap:DotNet:Report"];
+            var baseIp = _configuration["ServerConfig:BaseIp"];
+
+            if (!string.IsNullOrWhiteSpace(url) && !string.IsNullOrWhiteSpace(baseIp))
+            {
+                url = url.Replace("{IP}", baseIp);
+            }
             return new DotNetSoapReport.ServicioReporteClient(Binding, new EndpointAddress(url));
         }
 
