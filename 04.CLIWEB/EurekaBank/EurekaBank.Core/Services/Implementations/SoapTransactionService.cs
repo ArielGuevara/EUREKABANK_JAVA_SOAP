@@ -475,6 +475,12 @@ namespace EurekaBank.Core.Services.Implementations
         private DotNetSoapTransaction.ServicioTransaccionClient GetDotNetClient()
         {
             var url = _configuration["Hosts:Soap:DotNet:Transaction"];
+            var baseIp = _configuration["ServerConfig:BaseIp"];
+
+            if (!string.IsNullOrWhiteSpace(url) && !string.IsNullOrWhiteSpace(baseIp))
+            {
+                url = url.Replace("{IP}", baseIp);
+            }
             return new DotNetSoapTransaction.ServicioTransaccionClient(Binding, new EndpointAddress(url));
         }
 
