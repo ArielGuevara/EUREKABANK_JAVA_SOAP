@@ -388,7 +388,7 @@ namespace JavaSoapReport
         {
             if ((endpointConfiguration == EndpointConfiguration.ServicioReportePort))
             {
-                return new System.ServiceModel.EndpointAddress("http://10.40.16.33:8080/EurekaBank_Soap_Java_GR01/ServicioReporte");
+                return new System.ServiceModel.EndpointAddress("http://10.40.20.34:8080/JavaBDDSOAP/ServicioReporte");
             }
             throw new System.InvalidOperationException(string.Format("Could not find endpoint with name \'{0}\'.", endpointConfiguration));
         }

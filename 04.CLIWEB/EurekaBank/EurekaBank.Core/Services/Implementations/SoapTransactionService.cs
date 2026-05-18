@@ -139,7 +139,7 @@ namespace EurekaBank.Core.Services.Implementations
             {
                 System.Diagnostics.Debug.WriteLine($"=== MANUAL SOAP JAVA DEPOSIT ===");
                 System.Diagnostics.Debug.WriteLine($"Endpoint: {endpointUrl}");
-                System.Diagnostics.Debug.WriteLine($"Importe: {request.Importe}");
+                System.Diagnostics.Debug.WriteLine($"Importe: {request.Importe.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
 
                 var soapEnvelope = CreateDepositSoapEnvelope(request);
                 System.Diagnostics.Debug.WriteLine($"SOAP Request XML: {soapEnvelope}");
@@ -148,12 +148,12 @@ namespace EurekaBank.Core.Services.Implementations
                 {
                     Content = new StringContent(soapEnvelope, Encoding.UTF8, "text/xml")
                 };
-                
+
                 httpRequest.Headers.Add("SOAPAction", "http://ws.monster.edu.ec/ServicioTransaccion/realizarDepositoRequest");
 
                 var httpResponse = await _httpClient.SendAsync(httpRequest);
                 var responseXml = await httpResponse.Content.ReadAsStringAsync();
-                
+
                 System.Diagnostics.Debug.WriteLine($"=== MANUAL SOAP JAVA DEPOSIT RESPONSE ===");
                 System.Diagnostics.Debug.WriteLine($"Status: {httpResponse.StatusCode}");
                 System.Diagnostics.Debug.WriteLine($"Response XML: {responseXml}");
@@ -180,7 +180,7 @@ namespace EurekaBank.Core.Services.Implementations
             try
             {
                 System.Diagnostics.Debug.WriteLine($"=== MANUAL SOAP JAVA WITHDRAW ===");
-                System.Diagnostics.Debug.WriteLine($"Importe: {request.Importe}");
+                System.Diagnostics.Debug.WriteLine($"Importe: {request.Importe.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
 
                 var soapEnvelope = CreateWithdrawSoapEnvelope(request);
                 System.Diagnostics.Debug.WriteLine($"SOAP Request XML: {soapEnvelope}");
@@ -189,12 +189,12 @@ namespace EurekaBank.Core.Services.Implementations
                 {
                     Content = new StringContent(soapEnvelope, Encoding.UTF8, "text/xml")
                 };
-                
+
                 httpRequest.Headers.Add("SOAPAction", "http://ws.monster.edu.ec/ServicioTransaccion/realizarRetiroRequest");
 
                 var httpResponse = await _httpClient.SendAsync(httpRequest);
                 var responseXml = await httpResponse.Content.ReadAsStringAsync();
-                
+
                 System.Diagnostics.Debug.WriteLine($"Response XML: {responseXml}");
 
                 return ParseJavaWithdrawResponse(responseXml);
@@ -222,7 +222,7 @@ namespace EurekaBank.Core.Services.Implementations
                 System.Diagnostics.Debug.WriteLine($"Endpoint: {endpointUrl}");
                 System.Diagnostics.Debug.WriteLine($"CuentaOrigen: {request.CuentaOrigen}");
                 System.Diagnostics.Debug.WriteLine($"CuentaDestino: {request.CuentaDestino}");
-                System.Diagnostics.Debug.WriteLine($"Importe: {request.Importe}");
+                System.Diagnostics.Debug.WriteLine($"Importe: {request.Importe.ToString(System.Globalization.CultureInfo.InvariantCulture)}");
 
                 var soapEnvelope = CreateTransferSoapEnvelope(request);
                 System.Diagnostics.Debug.WriteLine($"SOAP Request XML: {soapEnvelope}");
@@ -231,12 +231,12 @@ namespace EurekaBank.Core.Services.Implementations
                 {
                     Content = new StringContent(soapEnvelope, Encoding.UTF8, "text/xml")
                 };
-                
+
                 httpRequest.Headers.Add("SOAPAction", "http://ws.monster.edu.ec/ServicioTransaccion/realizarTransferenciaRequest");
 
                 var httpResponse = await _httpClient.SendAsync(httpRequest);
                 var responseXml = await httpResponse.Content.ReadAsStringAsync();
-                
+
                 System.Diagnostics.Debug.WriteLine($"=== MANUAL SOAP JAVA TRANSFER RESPONSE ===");
                 System.Diagnostics.Debug.WriteLine($"Status: {httpResponse.StatusCode}");
                 System.Diagnostics.Debug.WriteLine($"Response XML: {responseXml}");
@@ -262,7 +262,7 @@ namespace EurekaBank.Core.Services.Implementations
             <datos>
                 <codigoCuenta>{request.CodigoCuenta}</codigoCuenta>
                 <claveCuenta>{request.ClaveCuenta}</claveCuenta>
-                <importe>{request.Importe}</importe>
+                <importe>{request.Importe.ToString(System.Globalization.CultureInfo.InvariantCulture)}</importe>
                 <codigoEmpleado>{request.CodigoEmpleado}</codigoEmpleado>
                 <codigoTipoMovimiento>{request.CodigoTipoMovimiento}</codigoTipoMovimiento>
             </datos>
@@ -281,7 +281,7 @@ namespace EurekaBank.Core.Services.Implementations
             <datos>
                 <codigoCuenta>{request.CodigoCuenta}</codigoCuenta>
                 <claveCuenta>{request.ClaveCuenta}</claveCuenta>
-                <importe>{request.Importe}</importe>
+                <importe>{request.Importe.ToString(System.Globalization.CultureInfo.InvariantCulture)}</importe>
                 <codigoEmpleado>{request.CodigoEmpleado}</codigoEmpleado>
                 <codigoTipoMovimiento>{request.CodigoTipoMovimiento}</codigoTipoMovimiento>
             </datos>
@@ -301,7 +301,7 @@ namespace EurekaBank.Core.Services.Implementations
                 <cuentaOrigen>{request.CuentaOrigen}</cuentaOrigen>
                 <cuentaDestino>{request.CuentaDestino}</cuentaDestino>
                 <claveCuentaOrigen>{request.ClaveCuentaOrigen}</claveCuentaOrigen>
-                <importe>{request.Importe}</importe>
+                <importe>{request.Importe.ToString(System.Globalization.CultureInfo.InvariantCulture)}</importe>
                 <codigoEmpleado>{request.CodigoEmpleado}</codigoEmpleado>
             </datos>
         </ws:realizarTransferencia>
@@ -317,7 +317,7 @@ namespace EurekaBank.Core.Services.Implementations
             {
                 var doc = XDocument.Parse(xmlResponse);
                 var returnElement = doc.Descendants("return").FirstOrDefault();
-                
+
                 if (returnElement == null)
                 {
                     return new TransactionResponse<DepositResponseData> { Exitoso = false, Mensaje = "No se encontró elemento return en la respuesta" };
@@ -363,7 +363,7 @@ namespace EurekaBank.Core.Services.Implementations
             {
                 var doc = XDocument.Parse(xmlResponse);
                 var returnElement = doc.Descendants("return").FirstOrDefault();
-                
+
                 if (returnElement == null)
                 {
                     return new TransactionResponse<WithdrawResponseData> { Exitoso = false, Mensaje = "No se encontró elemento return en la respuesta" };
@@ -411,7 +411,7 @@ namespace EurekaBank.Core.Services.Implementations
             {
                 var doc = XDocument.Parse(xmlResponse);
                 var returnElement = doc.Descendants("return").FirstOrDefault();
-                
+
                 if (returnElement == null)
                 {
                     return new TransactionResponse<TransferResponseData> { Exitoso = false, Mensaje = "No se encontró elemento return en la respuesta" };
@@ -436,17 +436,17 @@ namespace EurekaBank.Core.Services.Implementations
                     if (datosElement != null)
                     {
                         System.Diagnostics.Debug.WriteLine($"Found datos element for transfer: {datosElement}");
-                        
+
                         response.Datos = new TransferResponseData
                         {
-                            CuentaOrigen = new AccountMovement 
-                            { 
+                            CuentaOrigen = new AccountMovement
+                            {
                                 Codigo = datosElement.Element("cuentaOrigen")?.Value ?? "",
                                 SaldoAnterior = decimal.Parse(datosElement.Element("saldoAnteriorOrigen")?.Value ?? "0"),
                                 SaldoNuevo = decimal.Parse(datosElement.Element("saldoNuevoOrigen")?.Value ?? "0")
                             },
-                            CuentaDestino = new AccountMovement 
-                            { 
+                            CuentaDestino = new AccountMovement
+                            {
                                 Codigo = datosElement.Element("cuentaDestino")?.Value ?? "",
                                 SaldoAnterior = decimal.Parse(datosElement.Element("saldoAnteriorDestino")?.Value ?? "0"),
                                 SaldoNuevo = decimal.Parse(datosElement.Element("saldoNuevoDestino")?.Value ?? "0")
@@ -534,11 +534,11 @@ namespace EurekaBank.Core.Services.Implementations
 
         private TransactionResponse<DepositResponseData> MapJavaDepositResponse(JavaSoapTransaction.respuestaDTO r)
         {
-            var response = new TransactionResponse<DepositResponseData> 
-            { 
-                Exitoso = r.exitoso, 
-                Mensaje = r.mensaje, 
-                CodigoError = r.codigoError 
+            var response = new TransactionResponse<DepositResponseData>
+            {
+                Exitoso = r.exitoso,
+                Mensaje = r.mensaje,
+                CodigoError = r.codigoError
             };
 
             // LOGGING PARA DEBUGGING
@@ -582,7 +582,7 @@ namespace EurekaBank.Core.Services.Implementations
                         // Método fallback: convertir XML a JSON como antes
                         string json = JsonConvert.SerializeXmlNode(r.datos);
                         System.Diagnostics.Debug.WriteLine($"JSON convertido: {json}");
-                        
+
                         dynamic data = JsonConvert.DeserializeObject<dynamic>(json)!;
 
                         response.Datos = new DepositResponseData
@@ -598,7 +598,7 @@ namespace EurekaBank.Core.Services.Implementations
                 {
                     System.Diagnostics.Debug.WriteLine($"Error en mapeo Java: {ex.Message}");
                     System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
-                    
+
                     // Si todo falla, al menos devolver respuesta exitosa sin datos
                     if (r.exitoso)
                     {
@@ -618,13 +618,13 @@ namespace EurekaBank.Core.Services.Implementations
         private TransactionResponse<WithdrawResponseData> MapJavaWithdrawResponse(JavaSoapTransaction.respuestaDTO r)
         {
             var response = new TransactionResponse<WithdrawResponseData> { Exitoso = r.exitoso, Mensaje = r.mensaje, CodigoError = r.codigoError };
-            
+
             if (r.exitoso && r.datos != null)
             {
                 try
                 {
                     System.Diagnostics.Debug.WriteLine($"Retiro - Datos XML: {r.datos.OuterXml}");
-                    
+
                     string json = JsonConvert.SerializeXmlNode(r.datos);
                     dynamic data = JsonConvert.DeserializeObject<dynamic>(json)!;
 
@@ -648,20 +648,20 @@ namespace EurekaBank.Core.Services.Implementations
             {
                 response.Datos = new WithdrawResponseData();
             }
-            
+
             return response;
         }
 
         private TransactionResponse<TransferResponseData> MapJavaTransferResponse(JavaSoapTransaction.respuestaDTO r)
         {
             var response = new TransactionResponse<TransferResponseData> { Exitoso = r.exitoso, Mensaje = r.mensaje, CodigoError = r.codigoError };
-            
+
             if (r.exitoso && r.datos != null)
             {
                 try
                 {
                     System.Diagnostics.Debug.WriteLine($"Transferencia - Datos XML: {r.datos.OuterXml}");
-                    
+
                     string json = JsonConvert.SerializeXmlNode(r.datos);
                     dynamic data = JsonConvert.DeserializeObject<dynamic>(json)!;
 
@@ -701,7 +701,7 @@ namespace EurekaBank.Core.Services.Implementations
                     TotalDescontado = 0
                 };
             }
-            
+
             return response;
         }
     }

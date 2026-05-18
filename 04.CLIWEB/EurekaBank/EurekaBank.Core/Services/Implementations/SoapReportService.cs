@@ -95,7 +95,7 @@ namespace EurekaBank.Core.Services.Implementations
             {
                 var url = _configuration["Hosts:Soap:Java:Report"];
 
-                    var baseIp = _configuration["ServerConfig:BaseIp"];
+                var baseIp = _configuration["ServerConfig:BaseIp"];
 
                 if (!string.IsNullOrWhiteSpace(url) && !string.IsNullOrWhiteSpace(baseIp))
                 {
